@@ -13,11 +13,8 @@ def get_pair(l, s=2020):
 
 def get_pair_optimized(l, s=2020):
     l = np.array(l)
-    for i in range(len(l)):
-        a = l + np.roll(l, i)
-        if np.nonzero(a==s)[0].size != 0:
-            j = np.nonzero(a==s)[0]
-            return i, l[j][0], l[j-i][0], (l[j] * l[j-i])[0]
+    x = np.where(np.add.outer(l, l) == s)
+    return 1, l[x[0]][0], l[x[1]][0], (l[x[0]][0] * l[x[1]][0])
 
 def get_triplet(l, s=2020):
     for i, b in enumerate(l):
