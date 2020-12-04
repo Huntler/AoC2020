@@ -29,38 +29,50 @@ def is_valid(p):
     if False in c:
         return False
 
-    import re
-
-    byr = re.compile("[0-9]{4}")
-    if byr.match(p["byr"]) and not (1920 <= int(p["byr"]) <= 2002):
-        return False
-
-    iyr = re.compile("[0-9]{4}")
-    if iyr.match(p["iyr"]) and not (2010 <= int(p["iyr"]) <= 2020):
-        return False
-
-    eyr = re.compile("[0-9]{4}")
-    if eyr.match(p["eyr"]) and not (2020 <= int(p["eyr"]) <= 2030):
-        return False
-
-    hgt = re.compile("[0-9]*(cm|in)")
-    if hgt.match(p["hgt"]):
-        h = int(p["hgt"][:-2])
-        if p["hgt"].endswith("cm") and not (150 <= h <= 193):
+    try:
+        if not (1920 <= int(p["byr"]) <= 2002):
             return False
-        elif p["hgt"].endswith("in") and not(59 <= h <= 76):
+    except:
+        return False
+
+    try:
+        if not (2010 <= int(p["iyr"]) <= 2020):
             return False
-
-    hcl = re.compile("#([0-9a-f]){6}")
-    if not hcl.match(p["hcl"]) or len(p["hcl"]) != 7:
+    except:
         return False
 
-    #ecl = re.compile("(amb|blu|brn|gry|grn|hzl|oth)")
-    if p["ecl"] not in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]:
+    try:
+        if not (2020 <= int(p["eyr"]) <= 2030):
+            return False
+    except:
         return False
 
-    pid = re.compile("[0-9]{9}")
-    if not pid.match(p["pid"]) or len(p["pid"]) != 9:
+    try:
+        if p["hgt"].endswith("cm"):
+            if not (150 <= int(p["hgt"][:-2]) <= 193):
+                return False
+        if p["hgt"].endswith("in"):
+            if not (59 <= int(p["hgt"][:-2]) <= 76):
+                return False
+    except ValueError:
+        return False
+
+    try:
+        if p["hcl"].startswith("#"):
+            int(p["hcl"][1:], base=16)
+            if len(p["hcl"]) != 7:
+                return False
+    except ValueError:
+        return False
+
+    if p["ecl"] not in ["amb", "blu", "brn", "gry", "hzl", "grn", "oth"]:
+        return False
+
+    try:
+        int(p["pid"], base=10)
+        if len(p["pid"]) != 9:
+            return False
+    except ValueError:
         return False
 
     return True
